@@ -8,11 +8,12 @@ interface Props {
   error: string
   fps: number
   handVisible: boolean
+  paused: boolean
   onStart: () => void
   children?: ReactNode
 }
 
-export default function CameraPanel({ videoRef, canvasRef, status, error, fps, handVisible, onStart, children }: Props) {
+export default function CameraPanel({ videoRef, canvasRef, status, error, fps, handVisible, paused, onStart, children }: Props) {
   const running = status === 'running'
   return (
     <section className="panel flex flex-col overflow-hidden">
@@ -24,7 +25,7 @@ export default function CameraPanel({ videoRef, canvasRef, status, error, fps, h
         {running ? (
           <div className="absolute left-3 top-3 flex gap-2 font-mono text-[11px]">
             <span className={`rounded-md px-2 py-1 backdrop-blur ${handVisible ? 'bg-emerald-500/20 text-emerald-300' : 'bg-black/50 text-zinc-400'}`}>
-              {handVisible ? '● hand' : '○ no hand'}
+              {paused ? '❚❚ paused' : handVisible ? '● hand' : '○ no hand'}
             </span>
             <span className="rounded-md bg-black/50 px-2 py-1 text-zinc-400 backdrop-blur">{fps} fps</span>
           </div>

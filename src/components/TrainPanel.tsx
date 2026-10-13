@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState, type RefObject } from 'react'
+import Icon from './Icon'
 import { ACTIONS, distance, type Action, type Gesture } from '../lib/gesture'
 
 export interface LatestFrame {
@@ -116,7 +117,7 @@ export default function TrainPanel({ initial, gestures, latest, handVisible, cam
                       : 'bg-white/[0.03] text-zinc-400 ring-white/[0.08] hover:text-zinc-200'
                   }`}
                 >
-                  <div className="mb-0.5 text-lg">{ACTIONS[a].icon}</div>
+                  <Icon name={a} className="mx-auto mb-1 block size-5" />
                   {ACTIONS[a].label}
                 </button>
               ))}

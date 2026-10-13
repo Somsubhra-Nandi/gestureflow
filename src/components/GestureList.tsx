@@ -1,3 +1,4 @@
+import Icon from './Icon'
 import { ACTIONS, type Gesture } from '../lib/gesture'
 
 interface Props {
@@ -42,8 +43,8 @@ export default function GestureList({ gestures, matchedId, firedId, onRetrain, o
                     <div className="truncate font-medium">{g.name}</div>
                     <div className="mt-0.5 text-xs text-zinc-500">{g.samples.length} samples</div>
                   </div>
-                  <span className="shrink-0 rounded-lg bg-violet-500/10 px-2 py-1 text-xs text-violet-200 ring-1 ring-violet-400/20">
-                    {ACTIONS[g.action].icon} {ACTIONS[g.action].label}
+                  <span className="flex shrink-0 items-center gap-1.5 rounded-lg bg-violet-500/10 px-2 py-1 text-xs text-violet-200 ring-1 ring-violet-400/20">
+                    <Icon name={g.action} className="size-3.5" /> {ACTIONS[g.action].label}
                   </span>
                 </div>
                 <div className="mt-3 flex gap-3 text-xs text-zinc-500">

@@ -1,4 +1,5 @@
 import { useEffect, useImperativeHandle, useRef, useState, type FormEvent, type ReactNode, type Ref } from 'react'
+import Icon from './Icon'
 import type { Action } from '../lib/gesture'
 import { loadYouTubeApi, parseVideoId } from '../lib/youtube'
 
@@ -122,7 +123,7 @@ export default function YouTubePanel({ ref, overlay }: { ref: Ref<PlayerHandle>;
         <div className="flex items-center justify-between gap-3 border-b border-amber-400/20 bg-amber-400/10 px-4 py-2.5 text-sm text-amber-200">
           <span>The browser blocked gesture-started playback. Start it once manually and gestures will work after that.</span>
           <button className="btn-primary shrink-0 py-1.5" onClick={play}>
-            ▶ Play
+            <Icon name="play" /> Play
           </button>
         </div>
       )}
@@ -130,13 +131,13 @@ export default function YouTubePanel({ ref, overlay }: { ref: Ref<PlayerHandle>;
       <div className="flex flex-wrap items-center gap-2 p-3">
         <div className="flex gap-1.5">
           <button className="btn-ghost" disabled={!ready} onClick={() => run('backward')} title="Back 10s">
-            ⏪
+            <Icon name="backward" />
           </button>
           <button className="btn-ghost min-w-24" disabled={!ready} onClick={() => run('playPause')}>
-            {playing ? '⏸ Pause' : '▶ Play'}
+            <Icon name={playing ? 'pause' : 'play'} /> {playing ? 'Pause' : 'Play'}
           </button>
           <button className="btn-ghost" disabled={!ready} onClick={() => run('forward')} title="Forward 10s">
-            ⏩
+            <Icon name="forward" />
           </button>
         </div>
         <form onSubmit={loadVideo} className="ml-auto flex min-w-60 flex-1 gap-1.5 sm:max-w-sm">

@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from 'react'
 import CameraPanel from './components/CameraPanel'
+import Icon from './components/Icon'
 import GestureList from './components/GestureList'
 import StatusPanel from './components/StatusPanel'
 import TrainPanel, { type LatestFrame } from './components/TrainPanel'
@@ -100,7 +101,7 @@ export default function App() {
                 key={fired.at}
                 className="animate-toast pointer-events-none absolute top-1/2 left-1/2 flex items-center gap-3 rounded-2xl bg-zinc-950/80 px-6 py-4 shadow-2xl ring-1 ring-violet-400/40 backdrop-blur"
               >
-                <span className="text-3xl">{ACTIONS[fired.gesture.action].icon}</span>
+                <Icon name={fired.gesture.action} className="size-8 text-violet-300" />
                 <div>
                   <div className="font-semibold">{ACTIONS[fired.gesture.action].label}</div>
                   <div className="text-xs text-zinc-400">via “{fired.gesture.name}”</div>
@@ -109,7 +110,7 @@ export default function App() {
             )
           }
         />
-        <CameraPanel {...camera} handVisible={handVisible} onStart={camera.start}>
+        <CameraPanel {...camera} handVisible={handVisible} paused={!detectionOn && !training} onStart={camera.start}>
           {training ? (
             <TrainPanel
               key={training.initial?.id ?? 'new'}
