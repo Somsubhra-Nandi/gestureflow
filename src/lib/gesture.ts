@@ -34,3 +34,37 @@ export function toFeatures(landmarks: NormalizedLandmark[], aspect: number): num
   const scale = ([5, 9, 17].reduce((s, i) => s + Math.hypot(...rel[i]), 0) / 3) || 1
   return rel.flatMap(([x, y, z]) => [x / scale, y / scale, (z / scale) * Z_WEIGHT])
 }
+
+export function distance(a: number[], b: number[]): number {
+  let sum = 0
+  for (let i = 0; i < a.length; i++) sum += (a[i] - b[i]) ** 2
+  return Math.sqrt(sum)
+}
+
+const STORAGE_KEY = 'gestureflow.gestures.v1'
+const FEATURE_LENGTH = 21 * 3
+
+export function loadGestures(): Gesture[] {
+  try {
+    const parsed: unknown = JSON.parse(localStorage.getItem(STORAGE_KEY) ?? '[]')
+    if (!Array.isArray(parsed)) return []
+    return parsed.filter(
+      (g: Gesture) =>
+        typeof g?.id === 'string' &&
+        g.action in ACTIONS &&
+        Array.isArray(g.samples) &&
+        g.samples.length > 0 &&
+        g.samples.every((s) => Array.isArray(s) && s.length === FEATURE_LENGTH),
+    )
+  } catch {
+    return []
+  }
+}
+
+export function saveGestures(gestures: Gesture[]) {
+  try {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(gestures))
+  } catch {
+    // Storage full or disabled: gestures still work for this session.
+  }
+}
