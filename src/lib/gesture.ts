@@ -2,10 +2,10 @@ import type { NormalizedLandmark } from '@mediapipe/tasks-vision'
 
 export type Action = 'playPause' | 'forward' | 'backward'
 
-export const ACTIONS: Record<Action, { label: string; icon: string }> = {
-  playPause: { label: 'Play / Pause', icon: '⏯' },
-  forward: { label: 'Skip +10s', icon: '⏩' },
-  backward: { label: 'Skip −10s', icon: '⏪' },
+export const ACTIONS: Record<Action, { label: string }> = {
+  playPause: { label: 'Play / Pause' },
+  forward: { label: 'Skip +10s' },
+  backward: { label: 'Skip −10s' },
 }
 
 export interface Gesture {
@@ -41,7 +41,7 @@ export function distance(a: number[], b: number[]): number {
   return Math.sqrt(sum)
 }
 
-export const DEFAULT_THRESHOLD = 0.7
+export const DEFAULT_THRESHOLD = 1.0
 const K = 5
 const MIN_VOTE_SHARE = 0.6
 /** Nearest gesture must be clearly closer than the runner-up (Lowe-style ratio test). */

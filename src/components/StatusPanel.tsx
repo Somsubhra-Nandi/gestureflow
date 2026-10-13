@@ -1,3 +1,4 @@
+import Icon from './Icon'
 import { ACTIONS, type Recognition } from '../lib/gesture'
 import type { TriggerPhase } from '../lib/trigger'
 
@@ -54,8 +55,8 @@ export default function StatusPanel(p: Props) {
               <div className="truncate font-semibold text-violet-200">{match.name}</div>
               <div className="text-xs text-zinc-400">{PHASE_TEXT[p.phase]}</div>
             </div>
-            <span className="shrink-0 text-sm text-zinc-300">
-              {ACTIONS[match.action].icon} {ACTIONS[match.action].label}
+            <span className="flex shrink-0 items-center gap-1.5 text-sm text-zinc-300">
+              <Icon name={match.action} /> {ACTIONS[match.action].label}
             </span>
           </>
         ) : (
@@ -81,11 +82,11 @@ export default function StatusPanel(p: Props) {
         </summary>
         <div className="mt-3 space-y-3 font-mono">
           <label className="flex items-center gap-3">
-            <span className="w-20 text-zinc-400">threshold</span>
+            <span className="w-24 text-zinc-400">threshold</span>
             <input
               type="range"
               min={0.2}
-              max={2}
+              max={3}
               step={0.05}
               value={p.threshold}
               onChange={(e) => p.onThreshold(Number(e.target.value))}
@@ -98,7 +99,7 @@ export default function StatusPanel(p: Props) {
               <div className="space-y-1.5">
                 {result.ranking.map(({ gesture, distance }) => (
                   <div key={gesture.id} className="flex items-center gap-3">
-                    <span className="w-20 truncate text-zinc-400">{gesture.name}</span>
+                    <span className="w-24 truncate text-zinc-400">{gesture.name}</span>
                     <div className="relative h-1.5 flex-1 rounded-full bg-white/[0.06]">
                       {/* Bar scale: threshold sits at the midpoint marker. Shorter = closer match. */}
                       <div
