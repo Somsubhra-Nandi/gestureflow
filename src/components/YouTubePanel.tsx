@@ -27,6 +27,8 @@ export default function YouTubePanel({ ref, overlay }: { ref: Ref<PlayerHandle>;
   const [ready, setReady] = useState(false)
   const [playing, setPlaying] = useState(false)
   const [muted, setMuted] = useState(false)
+  const [title, setTitle] = useState('')
+  const [notice, setNotice] = useState('')
   const [blocked, setBlocked] = useState(false)
   const [error, setError] = useState('')
   const [url, setUrl] = useState('')
@@ -48,8 +50,10 @@ export default function YouTubePanel({ ref, overlay }: { ref: Ref<PlayerHandle>;
             onReady: (e) => {
               setReady(true)
               setMuted(e.target.isMuted())
+              setTitle(e.target.getVideoData()?.title ?? '')
             },
             onStateChange: (e) => {
+              setTitle(e.target.getVideoData()?.title ?? '')
               const active = e.data === api.PlayerState.PLAYING || e.data === api.PlayerState.BUFFERING
               setPlaying(active)
               if (active) {
@@ -127,9 +131,17 @@ export default function YouTubePanel({ ref, overlay }: { ref: Ref<PlayerHandle>;
     setUrlError('')
     setError('')
     setBlocked(false)
+    setTitle('')
     playerRef.current?.cueVideoById(id)
     setUrl('')
+    setNotice('Video switched. Your gestures still apply.')
   }
+
+  useEffect(() => {
+    if (!notice) return
+    const id = window.setTimeout(() => setNotice(''), 4000)
+    return () => window.clearTimeout(id)
+  }, [notice])
 
   return (
     <section className="panel flex flex-col overflow-hidden">
@@ -183,19 +195,36 @@ export default function YouTubePanel({ ref, overlay }: { ref: Ref<PlayerHandle>;
             <Icon name="mute" />
           </button>
         </div>
-        <form onSubmit={loadVideo} className="ml-auto flex min-w-60 flex-1 gap-1.5 sm:max-w-sm">
+      </div>
+
+      <form onSubmit={loadVideo} className="space-y-2 border-t border-white/[0.06] p-3">
+        <div className="flex items-baseline justify-between gap-3 text-xs">
+          <label htmlFor="video-url" className="shrink-0 font-medium text-zinc-300">
+            Change video
+          </label>
+          {title && <span className="truncate text-zinc-500">Now: {title}</span>}
+        </div>
+        <div className="flex gap-1.5">
           <input
+            id="video-url"
             value={url}
-            onChange={(e) => setUrl(e.target.value)}
-            placeholder="Paste a YouTube URL…"
+            onChange={(e) => {
+              setUrl(e.target.value)
+              setUrlError('')
+            }}
+            placeholder="Watch link, youtu.be link, Shorts link or video ID"
             className="min-w-0 flex-1 rounded-xl bg-white/[0.04] px-3 py-2 text-sm ring-1 ring-white/[0.08] outline-none placeholder:text-zinc-500 focus:ring-violet-400/60"
           />
-          <button className="btn-ghost" disabled={!url.trim() || !ready}>
-            Load
+          <button className="btn-primary" disabled={!url.trim() || !ready}>
+            Load video
           </button>
-        </form>
-        {urlError && <p className="w-full text-right text-xs text-rose-300">{urlError}</p>}
-      </div>
+        </div>
+        {urlError ? (
+          <p className="text-xs text-rose-300">{urlError}</p>
+        ) : (
+          notice && <p className="text-xs text-emerald-300">{notice}</p>
+        )}
+      </form>
     </section>
   )
 }
