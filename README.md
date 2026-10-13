@@ -2,7 +2,7 @@
 
 Train your own hand gestures in the browser and use them to control a YouTube video.
 
-A small proof of concept: MediaPipe tracks 21 hand landmarks from your webcam, you record a few seconds of any static pose, and a nearest-neighbor classifier maps that pose to **Play/Pause**, **Skip +10s** or **Skip −10s** on an embedded YouTube player.
+A small proof of concept: MediaPipe tracks 21 hand landmarks from your webcam, you record a few seconds of any static pose, and a nearest-neighbor classifier maps that pose to a control on an embedded YouTube player: **Play/Pause**, **Skip ±10s**, **Volume up/down** (10% steps) or **Mute/Unmute**.
 
 ## Run it
 
@@ -27,14 +27,14 @@ Other scripts: `npm run typecheck`, `npm run build`, `npm run preview`.
 
 Good starting pair: **open palm** → Play/Pause and **peace sign** → Skip +10s. Avoid poses that resemble a relaxed hand.
 
-Gestures are saved in `localStorage`. Use **Retrain** or **Delete** on a gesture card, and the **Detection** switch to pause recognition.
+Train as many gestures as you like; several gestures can share an action. Gestures are saved in `localStorage`. Use **Retrain** or **Delete** on a gesture card, and the **Detection** switch to pause recognition.
 
 ## How it works
 
 - **Normalization** (`src/lib/gesture.ts` → `toFeatures`). Landmarks are corrected for the frame's aspect ratio, translated so the wrist is the origin, and divided by palm size. The result is position- and distance-invariant but keeps orientation. The same function produces both training samples and live features.
 - **Classification** (`classify`). k-NN (k = 5) over every stored sample. A match is accepted only if the nearest distance is under the threshold, at least 60% of neighbors agree, and it is clearly closer than the next gesture (ratio ≤ 0.85).
 - **Triggering** (`src/lib/trigger.ts`). A gesture must be held for 300 ms to fire. It then fires once and stays latched until the hand leaves that pose, with a 1.2 s global cooldown between actions.
-- **Player.** Uses the official YouTube IFrame Player API. Paste any embeddable video URL to switch videos.
+- **Player.** Uses the official YouTube IFrame Player API. To switch videos, paste a watch link, `youtu.be` link, Shorts link or bare video ID into **Change video**. Your gesture mappings stay the same.
 
 Open **Tuning & distances** under the camera to see live per-gesture distances, vote share, ratio and the threshold slider. If a relaxed hand triggers actions, lower the threshold. If your gesture shows as "Unknown pose", raise it or retrain.
 
