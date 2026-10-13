@@ -4,12 +4,13 @@ import type { Action } from '../lib/gesture'
 import { loadYouTubeApi, parseVideoId } from '../lib/youtube'
 
 export interface PlayerHandle {
-  run: (action: Action) => void
+  run: (action: Action) => string | undefined
 }
 
 // Big Buck Bunny by the Blender Foundation (CC-BY, embeddable).
 const DEFAULT_VIDEO = 'aqz-KE-bpKQ'
 const SKIP_SECONDS = 10
+const VOLUME_STEP = 10
 
 const PLAYER_ERRORS: Record<number, string> = {
   2: 'Invalid video ID.',
@@ -25,6 +26,7 @@ export default function YouTubePanel({ ref, overlay }: { ref: Ref<PlayerHandle>;
   const blockTimer = useRef(0)
   const [ready, setReady] = useState(false)
   const [playing, setPlaying] = useState(false)
+  const [muted, setMuted] = useState(false)
   const [blocked, setBlocked] = useState(false)
   const [error, setError] = useState('')
   const [url, setUrl] = useState('')
@@ -43,7 +45,10 @@ export default function YouTubePanel({ ref, overlay }: { ref: Ref<PlayerHandle>;
           videoId: DEFAULT_VIDEO,
           playerVars: { playsinline: 1, rel: 0 },
           events: {
-            onReady: () => setReady(true),
+            onReady: (e) => {
+              setReady(true)
+              setMuted(e.target.isMuted())
+            },
             onStateChange: (e) => {
               const active = e.data === api.PlayerState.PLAYING || e.data === api.PlayerState.BUFFERING
               setPlaying(active)
@@ -78,17 +83,39 @@ export default function YouTubePanel({ ref, overlay }: { ref: Ref<PlayerHandle>;
     blockTimer.current = window.setTimeout(() => !isPlaying() && setBlocked(true), 1500)
   }
 
-  const run = (action: Action) => {
+  /** Runs an action and returns a short result for the on-screen feedback (e.g. "Volume 60%"). */
+  const run = (action: Action): string | undefined => {
     const player = playerRef.current
     if (!player || !ready) return
-    if (action === 'playPause') {
-      if (isPlaying()) player.pauseVideo()
-      else play()
-      return
+    switch (action) {
+      case 'playPause':
+        if (isPlaying()) player.pauseVideo()
+        else play()
+        return
+      case 'forward':
+      case 'backward': {
+        const delta = action === 'forward' ? SKIP_SECONDS : -SKIP_SECONDS
+        const duration = player.getDuration() || Infinity
+        player.seekTo(Math.max(0, Math.min(duration, player.getCurrentTime() + delta)), true)
+        return
+      }
+      case 'volumeUp':
+      case 'volumeDown': {
+        const delta = action === 'volumeUp' ? VOLUME_STEP : -VOLUME_STEP
+        const next = Math.max(0, Math.min(100, Math.round(player.getVolume() / VOLUME_STEP) * VOLUME_STEP + delta))
+        player.setVolume(next)
+        if (action === 'volumeUp' && player.isMuted()) player.unMute()
+        setMuted(action === 'volumeUp' ? false : player.isMuted())
+        return `Volume ${next}%`
+      }
+      case 'mute': {
+        const nowMuted = !player.isMuted()
+        if (nowMuted) player.mute()
+        else player.unMute()
+        setMuted(nowMuted)
+        return nowMuted ? 'Muted' : 'Unmuted'
+      }
     }
-    const delta = action === 'forward' ? SKIP_SECONDS : -SKIP_SECONDS
-    const duration = player.getDuration() || Infinity
-    player.seekTo(Math.max(0, Math.min(duration, player.getCurrentTime() + delta)), true)
   }
 
   useImperativeHandle(ref, () => ({ run }))
@@ -138,6 +165,22 @@ export default function YouTubePanel({ ref, overlay }: { ref: Ref<PlayerHandle>;
           </button>
           <button className="btn-ghost" disabled={!ready} onClick={() => run('forward')} title="Forward 10s">
             <Icon name="forward" />
+          </button>
+        </div>
+        <div className="flex gap-1.5">
+          <button className="btn-ghost" disabled={!ready} onClick={() => run('volumeDown')} title="Volume down">
+            <Icon name="volumeDown" />
+          </button>
+          <button className="btn-ghost" disabled={!ready} onClick={() => run('volumeUp')} title="Volume up">
+            <Icon name="volumeUp" />
+          </button>
+          <button
+            className={`btn-ghost ${muted ? 'text-rose-300 ring-rose-400/40' : ''}`}
+            disabled={!ready}
+            onClick={() => run('mute')}
+            title={muted ? 'Unmute' : 'Mute'}
+          >
+            <Icon name="mute" />
           </button>
         </div>
         <form onSubmit={loadVideo} className="ml-auto flex min-w-60 flex-1 gap-1.5 sm:max-w-sm">

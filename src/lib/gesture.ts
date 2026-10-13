@@ -1,11 +1,14 @@
 import type { NormalizedLandmark } from '@mediapipe/tasks-vision'
 
-export type Action = 'playPause' | 'forward' | 'backward'
+export type Action = 'playPause' | 'forward' | 'backward' | 'volumeUp' | 'volumeDown' | 'mute'
 
 export const ACTIONS: Record<Action, { label: string }> = {
   playPause: { label: 'Play / Pause' },
   forward: { label: 'Skip +10s' },
   backward: { label: 'Skip −10s' },
+  volumeUp: { label: 'Volume up' },
+  volumeDown: { label: 'Volume down' },
+  mute: { label: 'Mute / Unmute' },
 }
 
 export interface Gesture {

@@ -4,6 +4,9 @@ const PATHS = {
   playPause: 'M2.5 5v14l9.5-7zM14 5h3v14h-3zM19 5h3v14h-3z',
   forward: 'M3 6v12l9-6zM12 6v12l9-6z',
   backward: 'M21 6v12l-9-6zM12 6v12l-9-6z',
+  volumeUp: 'M2 9h4l5-4v14l-5-4H2zM17 11V8h2v3h3v2h-3v3h-2v-3h-3v-2z',
+  volumeDown: 'M2 9h4l5-4v14l-5-4H2zM14 11h8v2h-8z',
+  mute: 'M2 9h4l5-4v14l-5-4H2zM15.5 8.1l2.5 2.5 2.5-2.5 1.4 1.4-2.5 2.5 2.5 2.5-1.4 1.4-2.5-2.5-2.5 2.5-1.4-1.4 2.5-2.5-2.5-2.5z',
 }
 
 export type IconName = keyof typeof PATHS

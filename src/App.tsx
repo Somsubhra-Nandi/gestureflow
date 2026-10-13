@@ -27,7 +27,7 @@ export default function App() {
     phase: 'idle',
     progress: 0,
   })
-  const [fired, setFired] = useState<{ gesture: Gesture; at: number } | null>(null)
+  const [fired, setFired] = useState<{ gesture: Gesture; at: number; detail?: string } | null>(null)
   const playerRef = useRef<PlayerHandle>(null)
   const latest = useRef<LatestFrame>({ features: null, frame: 0 })
   const trigger = useRef(new GestureTrigger())
@@ -43,8 +43,8 @@ export default function App() {
     setRecognition({ result, ...trigger.current.status(now) })
     const gesture = firedId && gestures.find((g) => g.id === firedId)
     if (gesture) {
-      playerRef.current?.run(gesture.action)
-      setFired({ gesture, at: Date.now() })
+      const detail = playerRef.current?.run(gesture.action)
+      setFired({ gesture, at: Date.now(), detail })
     }
   })
 
@@ -103,7 +103,7 @@ export default function App() {
               >
                 <Icon name={fired.gesture.action} className="size-8 text-violet-300" />
                 <div>
-                  <div className="font-semibold">{ACTIONS[fired.gesture.action].label}</div>
+                  <div className="font-semibold">{fired.detail ?? ACTIONS[fired.gesture.action].label}</div>
                   <div className="text-xs text-zinc-400">via “{fired.gesture.name}”</div>
                 </div>
               </div>
