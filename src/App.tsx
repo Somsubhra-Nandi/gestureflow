@@ -1,9 +1,11 @@
-import { useState } from 'react'
+import { useRef, useState } from 'react'
 import CameraPanel from './components/CameraPanel'
+import YouTubePanel, { type PlayerHandle } from './components/YouTubePanel'
 import { useHandTracking } from './lib/useHandTracking'
 
 export default function App() {
   const [handVisible, setHandVisible] = useState(false)
+  const playerRef = useRef<PlayerHandle>(null)
   const camera = useHandTracking(true, (features) => setHandVisible(features !== null))
 
   return (
@@ -13,7 +15,7 @@ export default function App() {
         <button className="btn-primary">Train New Gesture</button>
       </header>
       <main className="grid items-start gap-5 lg:grid-cols-[1.55fr_1fr]">
-        <section className="panel aspect-video" />
+        <YouTubePanel ref={playerRef} />
         <CameraPanel {...camera} handVisible={handVisible} onStart={camera.start} />
       </main>
       <section className="panel mt-5 min-h-40" />
