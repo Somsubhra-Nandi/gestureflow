@@ -27,23 +27,23 @@ GestureFlow turns that around: **you** pick the pose, show it to the camera for 
 
 A web app with a YouTube player on one side and your webcam on the other:
 
-- 🖐️ **Live hand tracking.** 21 landmarks drawn over your webcam feed in real time.
-- 🎯 **Train any static pose.** Name it, hold it for about 2 seconds, and it's ready.
-- 🎬 **Map it to a player action.** Six actions are available (listed below), and you can train as many gestures as you like.
-- 🛡️ **No accidental triggers.** Unknown poses are rejected, and a held gesture fires once rather than repeating.
-- 📊 **Built-in tuning view.** Shows live match distances, votes and the threshold, so you can see exactly why a pose did or didn't match.
-- 🔗 **Any YouTube video.** Paste a watch link, `youtu.be` link, Shorts link or video ID. Your gestures stay the same.
+-  **Live hand tracking.** 21 landmarks drawn over your webcam feed in real time.
+-  **Train any static pose.** Name it, hold it for about 2 seconds, and it's ready.
+-  **Map it to a player action.** Six actions are available (listed below), and you can train as many gestures as you like.
+-  **No accidental triggers.** Unknown poses are rejected, and a held gesture fires once rather than repeating.
+-  **Built-in tuning view.** Shows live match distances, votes and the threshold, so you can see exactly why a pose did or didn't match.
+-  **Any YouTube video.** Paste a watch link, `youtu.be` link, Shorts link or video ID. Your gestures stay the same.
 
 ### Actions
 
 | Action | What it does |
 | --- | --- |
-| ⏯️ Play / Pause | Toggles playback |
-| ⏩ Skip +10s | Jumps forward 10 seconds |
-| ⏪ Skip −10s | Jumps back 10 seconds |
-| 🔊 Volume up | +10% (and unmutes) |
-| 🔉 Volume down | −10% |
-| 🔇 Mute / Unmute | Toggles sound |
+|  Play / Pause | Toggles playback |
+|  Skip +10s | Jumps forward 10 seconds |
+|  Skip −10s | Jumps back 10 seconds |
+|  Volume up | +10% (and unmutes) |
+|  Volume down | −10% |
+|  Mute / Unmute | Toggles sound |
 
 ## Quick start
 
@@ -126,7 +126,7 @@ localStorage.removeItem('gestureflow.threshold')   // tuning threshold
 
 ## Privacy
 
-🔒 Webcam frames are processed **entirely in your browser** and are never uploaded or recorded. The only data saved is the landmark coordinates of the gestures you train, in `localStorage`. The hand-tracking model file and the YouTube player are loaded from Google's servers.
+ Webcam frames are processed **entirely in your browser** and are never uploaded or recorded. The only data saved is the landmark coordinates of the gestures you train, in `localStorage`. The hand-tracking model file and the YouTube player are loaded from Google's servers.
 
 ## Project structure
 
